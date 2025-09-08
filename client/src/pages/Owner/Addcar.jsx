@@ -72,6 +72,54 @@ text-sm mt-6 max-w-xl'>
 
 </div>
 {/* car Transimmsion , Fuel Type, Seating Capacity */}
+<div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6'>
+  
+<div className='flex flex-col w-full'>
+    <label> Tranmission </label>
+    <select onChange={e=>SetCar({... car, category: e. target.value})} value={car.transmission} className='px-3 py-2 rift-1 border border-borderColor rounded-md outline-none' >
+      <option value="">Select a transmission</option>
+      <option value="Mannual">mannual</option>
+      <option value="Automatic">Automatic</option>
+      <option value="Semi-Automatic">Semi-Automatic</option>
+    </select>
+     </div>
+<div className='flex flex-col w-full'>
+    <label> Fuel Type </label>
+    <select onChange={e=>SetCar({... car, category: e. target.value})} value={car.fuel_type} className='px-3 py-2 rift-1 border border-borderColor rounded-md outline-none' >
+      <option value="">Select a Fuel Type</option>
+      <option value="Petrol">Petrol</option>
+      <option value="Diesel">Diesel</option>
+      <option value="Diesel">Diesel</option>
+      <option value="Gas">Gas</option>
+      <option value="Hybrid">Hybrid</option>
+    </select>
+     </div>
+  <div className='flex flex-col w-full'>
+    <label> seating_capacity</label>
+    <input type="number" placeholder="e•g• 4 " required className='px-3 py-2 mt-1 border border-borderColor rounded-d outline-none' value={car.seating_capacity} onChange={e=>SetCar({...car,seating_capacity:e.target.value})} />
+     </div>
+</div>
+{/* Car Location */}
+
+<div className='flex flex-col w-full'>
+   <label> Location </label>
+    <select onChange={e=>SetCar({... car,location: e. target.value})} value={car.location} className='px-3 py-2 rift-1 border border-borderColor rounded-md outline-none' >
+      <option value="">Select a location</option>
+      <option value="Chhibramau">Chhibramau</option>
+      <option value="Jhansi">Jhansi</option>
+      <option value="Kanpur">Kanpur</option>
+      <option value="Lucknow">Lucknow</option>
+      <option value="Prayagraj">Prayagraj</option>
+    </select>
+</div>
+{/* Car Description */}
+<div className='flex flex-col w-full'>
+    <label> Description</label>
+    <textarea rows={5} placeholder="e•g• A luxurious SUV with a spacious interior and a powerful engine" required className='px-3 py-2 mt-1 border porder-borderColor rounded-d outline-none' value={car.descryption} onChange={e=>SetCar({...car,descryption:e.target.value})}></textarea >
+     </div>
+     <button className='flex items-center gap-2 px-4 py-2.5 mt-4 bg-primary text-white rounded-md font-medium w-max cursor-pointer' >
+      <img src={assets.tick_icon} alt="" /> List Your Car
+     </button>
 </form>
     </div>
   )
