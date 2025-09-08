@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "./components/Navbar.jsx";
 import { Route, Routes, useLocation } from "react-router-dom";
-
+import Login from '/Users/prateekkumar/Desktop/coding/car rental/client/src/components/login.jsx'
 
 import Home from "./pages/Home.jsx";
 
@@ -17,11 +17,13 @@ import ManageCar from "./pages/Owner/ManageCar.jsx";
 import ManageBookings from "./pages/Owner/ManageBookings.jsx";
 
 const App = () => {
-  const [showlogin, setShowLogin] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
   const isOwnerpath = useLocation().pathname.startsWith("/owner");
 
   return (
     <>
+    {showLogin &&  <Login setShowLogin={setShowLogin}/>}
+     
       {!isOwnerpath && <Navbar setShowLogin={setShowLogin} />}
 
     <Routes>

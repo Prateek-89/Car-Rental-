@@ -60,7 +60,7 @@ const Testimonials = () => {
           >
             {tooltip.visible && tooltip.text === testimonial.name && (
               <span 
-                className="absolute px-2.5 py-1 text-sm rounded text-nowrap bg-indigo-500 text-white pointer-events-none transition-all duration-300"
+                className="absolute px-2.5 py-1 text-sm rounded text-nowrap bg-primary text-white pointer-events-none transition-all duration-300"
                 style={{ top: tooltip.y + 8, left: tooltip.x + 8 }}
               >
                 {tooltip.text}
