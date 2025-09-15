@@ -1,6 +1,7 @@
 import React from 'react'
 import Title from './Title'
 import { assets } from "../assets/assets";
+import {motion} from 'motion/react'
 
 const Testimonials = () => {
   const [tooltip, setTooltip] = React.useState({ visible: false, x: 0, y: 0, text: '' });
@@ -42,7 +43,7 @@ const Testimonials = () => {
   ];
 
   return (
-    <div className="py-28 px-6 md:px-16 lg:px-24 xl:px-44">
+    <motion.div className="py-28 px-6 md:px-16 lg:px-24 xl:px-44">
       <Title 
         title="What Our Customers Say" 
         subTitle="Discover why discerning travelers choose StayVenture for their luxury accommodations around the world." 
@@ -51,7 +52,12 @@ const Testimonials = () => {
       {/* Container with flex or grid */}
       <div className="mt-10 flex flex-wrap gap-6 justify-center">
         {testimonials.map((testimonial, index) => (
-          <div 
+          <motion.div 
+
+          initial={{opacity:0,y:40}}
+    whileInView={{opacity:1,y:0}}
+    transition={{ duration: 0.6, delay:index*0.2,ease:"easeInOut"}}
+    viewport={{once:true,amount:0.3}}
             key={index}
             ref={(el) => (cardRefs.current[index] = el)}
             onMouseMove={(e) => handleMouseMove(e, index)}
@@ -83,10 +89,10 @@ const Testimonials = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   )
 }
 
