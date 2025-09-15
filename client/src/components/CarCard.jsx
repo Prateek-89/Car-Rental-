@@ -50,7 +50,7 @@ const CarCard = ({ car }) => {
         <div className="mt-4 grid grid-cols-2 gap-y-2 text-gray-600">
           <div className="flex items-center text-sm text-muted-foreground">
             <img src={assets.users_icon} alt="Seats" className="h-4 mr-2" />
-            <span>{car.sitting_capacity} Seats</span>
+            <span>{car.seating_capacity} Seats</span>
           </div>
 
           <div className="flex items-center text-sm text-muted-foreground">

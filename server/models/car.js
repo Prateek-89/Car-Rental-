@@ -16,6 +16,6 @@ const carSchema =new mongoose.Schema({
     pricePerDay :{ type:Number,required:true},
 },{timestamps:true})
 
-const car=mongoose.model('car',carSchema)
+const car=mongoose.model('Car',carSchema)
 
 export default car

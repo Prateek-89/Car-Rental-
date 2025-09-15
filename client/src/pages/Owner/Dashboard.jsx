@@ -10,7 +10,7 @@ const Dashboard = () => {
   const [data, setData] = useState({
     totalCars: 0,
     totalBookings: 0,
-    ComplatedBookings: 0,
+    completedBookings: 0,
     pendingBookings: 0,
     recentBookings: [],
     monthlyRevenue: 0,
@@ -42,7 +42,7 @@ const fetchDashboardData=async()=>{
     { title: "Total Cars", value: data.totalCars, icon: assets.carIconColored },
     { title: "Total Bookings", value: data.totalBookings, icon: assets.listIconColored },
     { title: "Pendings", value: data.pendingBookings, icon: assets.cautionIconColored },
-    { title: "Confirmed", value: data.ComplatedBookings, icon: assets.listIconColored },
+    { title: "Confirmed", value: data.completedBookings, icon: assets.listIconColored },
   ];
 
   return (

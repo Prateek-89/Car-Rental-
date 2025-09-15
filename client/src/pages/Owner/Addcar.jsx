@@ -6,8 +6,7 @@ import { toast } from "react-hot-toast";
 
 const Addcar = () => {
 
-const {axios,currency }=useAppContext()
-
+  const{axios,currency}=useAppContext()
 
   const [image, setImage] = useState();
   const [submitting, setSubmitting] = useState(false);
@@ -23,10 +22,8 @@ const {axios,currency }=useAppContext()
     location: "",
     description: "",
   });
-
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-
     if (!image) {
       toast.error("Please upload a car image");
       return;
@@ -40,7 +37,7 @@ const {axios,currency }=useAppContext()
         model: car.model.trim(),
         year: Number(car.year),
         pricePerDay: Number(car.PricePerDay),
-        Category: car.Category, // keep if your schema uses Category; backend ignores unknowns
+        category: car.Category,
         transmission: car.transmission,
         fuel_type: car.fuel_type,
         seating_capacity: Number(car.seating_capacity),

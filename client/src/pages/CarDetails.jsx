@@ -1,20 +1,56 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { dummyCarData, assets } from '../assets/assets';
+import {  assets } from '../assets/assets';
 import Loader from '../components/Loader';
+import { useAppContext } from '../context/AppContext'
+import toast from 'react-hot-toast';  
 
 const CarDetails = () => {
   const { id } = useParams();
+  const {cars,axios,pickupDate,setPickupDate,returnDate,setReturnDate,user}=useAppContext()
   const navigate = useNavigate();
   const [car, setCar] = useState(null);
+  
   const handleSubmit =async (e) => {
-    e.preventDefault();}
+    e.preventDefault();
+
+  if(!user){
+    toast.error('Please login to book')
+    return
+  }
+
+  if(!pickupDate || !returnDate){
+    toast.error('Please select pickup and return dates')
+    return
+  }
+
+  if(new Date(returnDate) <= new Date(pickupDate)){
+    toast.error('Return date must be after pickup date')
+    return
+  }
+
+  try {
+    const {data}=await axios.post('/api/bookings/create',{
+      car: id,
+      pickupDate, 
+      returnDate
+    })
+    if (data.success){
+      toast.success(data.message || 'Booking created')
+      navigate('/my-bookings')
+    }else{
+        toast.error(data.message)
+    }
+  } catch (error) {
+      toast.error(error.response?.data?.message || error.message)
+  }
+  }
 
   useEffect(() => {
     // Use _id (string) instead of id
-    const foundCar = dummyCarData.find(car => car._id === id);
+    const foundCar = cars.find(car => car._id === id);
     setCar(foundCar);
-  }, [id]);
+  }, [cars,id]);
 
   // Show loader while car is not found
   if (!car) return <Loader />;
@@ -96,15 +132,19 @@ const CarDetails = () => {
 
     {/* Pickup Date */}
     <label className="block text-gray-600">Pickup Date</label>
-    <input
+    <input value = {pickupDate} onChange={(e)=>setPickupDate(e.target.value)}
       type="date"
+      min={new Date().toISOString().split('T')[0]}
+      required
       className="w-full p-2 border border-gray-300 rounded-lg"
     />
 
     {/* Return Date */}
     <label className="block text-gray-600">Return Date</label>
-    <input
+    <input value = {returnDate} onChange={(e)=>setReturnDate(e.target.value)}
       type="date"
+      min={pickupDate || new Date().toISOString().split('T')[0]}
+      required
       className="w-full p-2 border border-gray-300 rounded-lg"
     />
 
