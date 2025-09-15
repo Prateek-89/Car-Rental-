@@ -1,6 +1,7 @@
 import User from "../models/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import Car from "../models/car.js";   // ✅ Capitalized
 
 // Generate JWT token
 const generateToken = (userId) => {
@@ -13,12 +14,12 @@ export const registerUser = async (req, res) => {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password || password.length < 8) {
-      return res.json({ success: false, message: "Fill all the fields" });
+      return res.status(400).json({ success: false, message: "Fill all the fields" });
     }
 
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.json({ success: false, message: "User already exists" });
+      return res.status(400).json({ success: false, message: "User already exists" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,7 +29,7 @@ export const registerUser = async (req, res) => {
     res.json({ success: true, token });
   } catch (error) {
     console.log(error.message);
-    return res.json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -39,32 +40,40 @@ export const loginUser = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.json({ success: false, message: "User not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.json({ success: false, message: "Invalid credentials" });
+      return res.status(401).json({ success: false, message: "Invalid credentials" });
     }
 
     const token = generateToken(user._id.toString());
     res.json({ success: true, token });
   } catch (error) {
     console.log(error.message);
-    return res.json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-//  get user data using token (JWT)
+// Get user data
+export const getUserData = async (req, res) => {
+  try {
+    const { user } = req;
+    res.json({ success: true, user });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
-export const getUserData=async (req,res) =>{
-    try {
-        const{user}=req;
-        res.json({success:true,user})
-    } catch (error) {
-        console.log(error.message);
-        req.json({success:false,message:error.message})
-        
-        
-    }
-}
+// Get all cars
+export const getCars = async (req, res) => {
+  try {
+    const cars = await Car.find({ isAvailable: true });
+    res.json({ success: true, cars });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
