@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 // Set base URL for all axios requests
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL || 'http://localhost:3000';
 axios.defaults.headers.post["Content-Type"] = "application/json";
 
 // Create App context
@@ -12,7 +12,7 @@ export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
   const navigate = useNavigate();
-  const currency = import.meta.env.VITE_CURRENCY;
+  const currency = import.meta.env.VITE_CURRENCY || '$';
 
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
@@ -21,6 +21,14 @@ export const AppProvider = ({ children }) => {
   const [pickupDate, setPickupDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [cars, setCars] = useState([]);
+
+  // Helper function to get user-friendly error message
+  const getErrorMessage = (error) => {
+    if (error.code === 'ERR_NETWORK' || error.message === 'Network Error' || !error.response) {
+      return 'Cannot connect to server. Please make sure the server is running on port 3000.';
+    }
+    return error.response?.data?.message || error.message || 'An error occurred';
+  };
 
   // Fetch user data
   const fetchUser = async () => {
@@ -36,7 +44,10 @@ export const AppProvider = ({ children }) => {
         navigate("/");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || error.message);
+      // Don't show error toast for network errors on user fetch (server might be down)
+      if (error.code !== 'ERR_NETWORK' && error.response) {
+        toast.error(getErrorMessage(error));
+      }
     }
   };
 
@@ -46,7 +57,7 @@ export const AppProvider = ({ children }) => {
       const { data } = await axios.get("/api/user/cars");
       data.success ? setCars(data.cars) : toast.error(data.message);
     } catch (error) {
-      toast.error(error.response?.data?.message || error.message);
+      toast.error(getErrorMessage(error));
     }
   };
 
