@@ -13,8 +13,12 @@ export const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    if (!name || !email || !password || password.length < 8) {
-      return res.status(400).json({ success: false, message: "Fill all the fields" });
+    if (!name || !email || !password) {
+      return res.status(400).json({ success: false, message: "Please fill all fields (name, email, password)" });
+    }
+    
+    if (password.length < 8) {
+      return res.status(400).json({ success: false, message: "Password must be at least 8 characters long" });
     }
 
     const userExists = await User.findOne({ email });
@@ -26,7 +30,14 @@ export const registerUser = async (req, res) => {
     const user = await User.create({ name, email, password: hashedPassword });
 
     const token = generateToken(user._id.toString());
-    res.json({ success: true, token });
+    const userData = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      image: user.image
+    };
+    res.json({ success: true, token, user: userData });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ success: false, message: error.message });
@@ -49,7 +60,14 @@ export const loginUser = async (req, res) => {
     }
 
     const token = generateToken(user._id.toString());
-    res.json({ success: true, token });
+    const userData = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      image: user.image
+    };
+    res.json({ success: true, token, user: userData });
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({ success: false, message: error.message });
