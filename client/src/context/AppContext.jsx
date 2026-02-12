@@ -10,6 +10,19 @@ axios.defaults.headers.post["Content-Type"] = "application/json";
 // Create App context
 export const AppContext = createContext();
 
+// Add axios response interceptor to handle 401 errors
+let contextRef;
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401 && contextRef?.token) {
+      // Token expired or invalid - logout user
+      contextRef.logout();
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const AppProvider = ({ children }) => {
   const navigate = useNavigate();
   const currency = import.meta.env.VITE_CURRENCY || '$';
@@ -44,6 +57,13 @@ export const AppProvider = ({ children }) => {
         navigate("/");
       }
     } catch (error) {
+      // Handle 401 (token expired or invalid)
+      if (error.response?.status === 401) {
+        localStorage.removeItem("token");
+        setToken(null);
+        toast.error("Session expired. Please log in again.");
+        return;
+      }
       // Don't show error toast for network errors on user fetch (server might be down)
       if (error.code !== 'ERR_NETWORK' && error.response) {
         toast.error(getErrorMessage(error));
@@ -76,8 +96,14 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     const storedToken = localStorage.getItem("token");
     if (storedToken) {
-      setToken(storedToken);
-      axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+      // Validate token format (JWT is 3 parts separated by dots)
+      if (storedToken.split('.').length === 3) {
+        setToken(storedToken);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
+      } else {
+        // Invalid token format, remove it
+        localStorage.removeItem("token");
+      }
     }
     fetchCars();
   }, []);
@@ -114,6 +140,11 @@ export const AppProvider = ({ children }) => {
     returnDate,
     setReturnDate,
   };
+
+  // Reference context in axios interceptor
+  useEffect(() => {
+    contextRef = { token, logout };
+  }, [token, logout]);
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 };
